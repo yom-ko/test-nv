@@ -1,0 +1,57 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": "airbnb",
+  "plugins": ["import"],
+  "rules": {
+    "arrow-parens": "off",
+    "comma-dangle": ["error", "never"],
+    "react/jsx-curly-brace-presence": ["off"],
+    "function-paren-newline": ["off"],
+    "func-names": ["error", "never"],
+    "generator-star-spacing": ["error", "after"],
+    "import/extensions": "off",
+    "import/no-extraneous-dependencies": [
+      "off",
+      {
+        "devDependencies": true
+      }
+    ],
+    "import/no-unresolved": ["off"],
+    "jsx-a11y/anchor-is-valid": ["off"],
+    "jsx-a11y/no-static-element-interactions": ["off"],
+    "jsx-a11y/no-noninteractive-element-to-interactive-role": ["off"],
+    "jsx-a11y/no-noninteractive-element-interactions": ["off"],
+    "no-console": ["off"],
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+    "no-return-assign": ["off"],
+    "no-unused-expressions": [
+      "error",
+      {
+        "allowTaggedTemplates": true
+      }
+    ],
+    "object-curly-newline": ["off"],
+    "react/jsx-filename-extension": [
+      "error",
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ],
+    "react/button-has-type": [
+      "on",
+      {
+        "button": true,
+        "submit": true,
+        "reset": true,
+        "type": true
+      }
+    ],
+    "react/prop-types": ["off"],
+    "yield-star-spacing": ["error", "before"]
+  }
+}

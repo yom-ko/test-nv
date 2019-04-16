@@ -1,0 +1,16 @@
+# Dependency dirs
+/node_modules/
+
+# Build and temp dirs
+/build/
+/prod/
+/dist/
+/.tmp/
+/.cache/
+
+# Logs
+/logs/
+/*.log
+
+# IDE's local config
+/.vscode/
