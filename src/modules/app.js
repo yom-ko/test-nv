@@ -46,7 +46,7 @@ export const app = (
     isLoggedIn: false,
     loginError: null,
     path: '/',
-    listing: []
+    listing: {}
   },
   action = {}
 ) => {

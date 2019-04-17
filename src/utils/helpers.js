@@ -2,6 +2,10 @@ export const tokenRequestBaseURL = 'https://oauth.yandex.ru/authorize?response_t
 
 export const listingRequestBaseURL = 'https://cloud-api.yandex.net/v1/disk/resources';
 
+export function requestAuth() {
+  window.location.replace(tokenRequestBaseURL);
+}
+
 export function parseResponse(hash = document.location.hash) {
   let token = /access_token=([^&]+)/.exec(hash);
 
@@ -18,10 +22,6 @@ export function parseResponse(hash = document.location.hash) {
 export function getListingRequestURL(path) {
   const pathComponent = encodeURIComponent(path);
   return `${listingRequestBaseURL}?path=${pathComponent}`;
-}
-
-export function requestLogin() {
-  window.location.replace(tokenRequestBaseURL);
 }
 
 export function requestListing(token, path) {
@@ -42,4 +42,61 @@ export function requestListing(token, path) {
     .catch(error => {
       console.log('A problem with the fetch operation: ', error.message);
     });
+}
+
+export function updateListingForPath(receiveListingAC, changePathAC, path) {
+  const token = localStorage.getItem('myToken');
+
+  requestListing(token, path).then(data => {
+    receiveListingAC(data);
+  });
+
+  changePathAC(path);
+
+  window.history.pushState({ listingPath: path }, '');
+}
+
+export function attemptToLogIn(logUserInAC, receiveListingAC, path, hash = document.location) {
+  if (/token|error/.test(hash)) {
+    const result = parseResponse(hash);
+    logUserInAC(result);
+
+    if (typeof result === 'string') {
+      const token = result;
+      localStorage.setItem('myToken', token);
+
+      window.addEventListener('popstate', event => {
+        const currentToken = localStorage.getItem('myToken');
+        const {
+          state: { listingPath }
+        } = event;
+
+        requestListing(currentToken, listingPath).then(data => {
+          receiveListingAC(data);
+        });
+      });
+
+      requestListing(token, path).then(data => {
+        receiveListingAC(data);
+      });
+
+      window.history.pushState({ listingPath: path }, '');
+    } else {
+      console.log('Error: ', result[0], result[1]);
+    }
+  }
+}
+
+// Grabbed from here:
+// https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+export function formatBytes(bytes, decimals = 2) {
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['байт', 'КБ', 'МБ', 'ГБ', 'ТБ', 'ПБ', 'ЭБ', 'ЗБ', 'ИБ'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return `${parseFloat((bytes / (k ** i)).toFixed(dm))} ${sizes[i]}`;
 }

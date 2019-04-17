@@ -1,5 +1,4 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
 import { hot } from 'react-hot-loader';
 
 // Import high-level components
@@ -12,9 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // App component with routes
 export const App = () => (
   <Layout>
-    <Switch>
-      <Route exact path="/" component={Home} />
-    </Switch>
+    <Home />
   </Layout>
 );
 

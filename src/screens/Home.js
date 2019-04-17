@@ -1,34 +1,24 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button } from 'reactstrap';
+import { Row, Button } from 'reactstrap';
 
 import { actions } from 'modules/app';
-import { requestLogin, parseResponse, requestListing } from 'utils/helpers';
+import { requestAuth, attemptToLogIn, updateListingForPath } from 'utils/helpers';
+
+import ResourceList from 'components/ResourceList';
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.handleLogout = this.handleLogout.bind(this);
+    this.handleItemClick = this.handleItemClick.bind(this);
   }
 
   componentDidMount() {
-    const { path, logUserIn, receiveListing } = this.props;
-    const { hash } = document.location;
+    const { logUserIn, receiveListing, path } = this.props;
 
-    if (/token|error/.test(hash)) {
-      const result = parseResponse(hash);
-      logUserIn(result);
-
-      if (typeof result === 'string') {
-        const token = result;
-        localStorage.setItem('myToken', token);
-
-        requestListing(token, path).then((data) => {
-          receiveListing(data);
-        });
-      }
-    }
+    attemptToLogIn(logUserIn, receiveListing, path);
   }
 
   componentWillUnmount() {
@@ -40,23 +30,51 @@ class Home extends Component {
   handleLogout() {
     const { logUserOut } = this.props;
 
-    logUserOut();
+    localStorage.removeItem('myToken');
     window.location.replace('https://test-nv.netlify.com');
+    setTimeout(() => {
+      logUserOut();
+    }, 1500);
+  }
+
+  handleItemClick(path) {
+    const { receiveListing, changePath } = this.props;
+
+    updateListingForPath(receiveListing, changePath, path);
   }
 
   render() {
-    const { isLoggedIn } = this.props;
+    const { isLoggedIn, listing } = this.props;
+    let items = [];
+
+    if (Object.keys(listing).length) {
+      const { _embedded } = listing;
+      const { items: newItems } = _embedded;
+      items = newItems;
+    }
 
     return (
       <>
         {!isLoggedIn ? (
           <>
-            <Button onClick={requestLogin}>Login</Button>
+            <Row className="justify-content-center">
+              <h1 style={{ textAlign: 'center' }}>Войдите в свой аккаунт</h1>
+            </Row>
+            <Row className="justify-content-center">
+              <Button size="lg" color="warning" onClick={requestAuth}>
+                Войти
+              </Button>
+            </Row>
           </>
         ) : (
           <>
-            <Button onClick={this.handleLogout}>Logout</Button>
-            <h3>Disk Contents</h3>
+            <Row className="justify-content-end">
+              <Button color="link" onClick={this.handleLogout}>
+                Выйти
+              </Button>
+            </Row>
+            <h1 style={{ fontSize: '2rem', marginBottom: '1.1rem' }}>Содержимое вашего диска:</h1>
+            <ResourceList items={items} handleItemClick={this.handleItemClick} />
           </>
         )}
       </>
