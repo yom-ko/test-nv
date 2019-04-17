@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button } from 'reactstrap';
 
 import { actions } from 'modules/app';
-import { requestLogin, parseResponse } from 'utils/helpers';
+import { requestLogin, parseResponse, requestListing } from 'utils/helpers';
 
 class Home extends Component {
   constructor(props) {
@@ -13,15 +13,20 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    const { path, logUserIn, receiveListing } = this.props;
     const { hash } = document.location;
-    const { logUserIn } = this.props;
 
     if (/token|error/.test(hash)) {
-      const result = parseResponse();
+      const result = parseResponse(hash);
       logUserIn(result);
 
       if (typeof result === 'string') {
-        localStorage.setItem('myToken', result);
+        const token = result;
+        localStorage.setItem('myToken', token);
+
+        requestListing(token, path).then((data) => {
+          receiveListing(data);
+        });
       }
     }
   }
@@ -61,7 +66,8 @@ class Home extends Component {
 
 // Map state and dispatch() to the component props
 const mapStateToProps = ({ app }) => ({
-  items: app.items,
+  path: app.path,
+  listing: app.listing,
   isLoggedIn: app.isLoggedIn,
   loginError: app.loginError
 });
@@ -70,6 +76,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   {
     logUserIn: actions.logUserIn,
     logUserOut: actions.logUserOut,
+    changePath: actions.changePath,
     receiveListing: actions.receiveListing
   },
   dispatch

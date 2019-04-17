@@ -16,16 +16,19 @@ export function parseResponse(hash = document.location.hash) {
 }
 
 export function getListingRequestURL(path) {
-  return `${listingRequestBaseURL}?path=${path}`;
+  const pathComponent = encodeURIComponent(path);
+  return `${listingRequestBaseURL}?path=${pathComponent}`;
 }
 
 export function requestLogin() {
   window.location.replace(tokenRequestBaseURL);
 }
 
-export function requestListing(url, token) {
+export function requestListing(token, path) {
   const myHeaders = new Headers();
   myHeaders.append('Authorization', `OAuth ${token}`);
+
+  const url = getListingRequestURL(path);
 
   return fetch(url, {
     headers: myHeaders
@@ -40,11 +43,3 @@ export function requestListing(url, token) {
       console.log('A problem with the fetch operation: ', error.message);
     });
 }
-
-// export async function receiveListing(token) {
-//   try {
-
-//   } catch (error) {
-//     throw new Error(error.message);
-//   }
-// }
