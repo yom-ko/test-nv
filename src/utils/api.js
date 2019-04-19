@@ -2,13 +2,9 @@ export const tokenRequestBaseURL = 'https://oauth.yandex.ru/authorize?response_t
 
 export const listingRequestBaseURL = 'https://cloud-api.yandex.net/v1/disk/resources';
 
-// export function requestAuth() {
-//   window.location.replace(tokenRequestBaseURL);
-// }f
-
-export function removeHash() {
-  window.history.pushState('', document.title, window.location.pathname + window.location.search);
-}
+// export function removeHash() {
+// window.history.pushState('', document.title, window.location.pathname + window.location.search);
+// }
 
 export function parseResponse(hash = document.location.hash) {
   let token = /access_token=([^&]+)/.exec(hash);
@@ -51,51 +47,9 @@ export function requestListing(token, path) {
       if (response.ok) {
         return response.json();
       }
-      console.log(response);
       throw new Error('Network response was not ok.');
     })
     .catch(error => {
       console.log('A problem with the fetch operation: ', error.message);
     });
 }
-
-// export function updateListingForPath(receiveListingAC, changePathAC, path) {
-//   const token = localStorage.getItem('myToken');
-
-//   requestListing(token, path).then(data => {
-//     receiveListingAC(data);
-//   });
-
-//   changePathAC(path);
-
-//   window.history.pushState({ listingPath: path }, '');
-// }
-
-// export function attemptToLogIn(logUserInAC, receiveListingAC, path, hash = document.location) {
-//   if (/token|error/.test(hash)) {
-//     const result = parseResponse(hash);
-//     logUserInAC(result);
-
-//     if (typeof result === 'string') {
-//       const token = result;
-//       localStorage.setItem('myToken', token);
-
-//       window.addEventListener('popstate', event => {
-//         const currentToken = localStorage.getItem('myToken');
-//         const {
-//           state: { listingPath }
-//         } = event;
-
-//         requestListing(currentToken, listingPath).then(data => {
-//           receiveListingAC(data);
-//         });
-//       });
-
-//       requestListing(token, path).then(data => {
-//         receiveListingAC(data);
-//       });
-
-//       window.history.pushState({ listingPath: path }, '');
-//     }
-//   }
-// }

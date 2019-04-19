@@ -5,8 +5,6 @@ export const actions = {
   USER_LOGIN: '@app/USER_LOGIN',
   USER_REQUEST_LOGOUT: '@app/USER_REQUEST_LOGOUT',
   USER_LOGOUT: '@app/USER_LOGOUT',
-  TOKEN_RECEIVE: '@app/TOKEN_RECEIVE',
-  PATH_CHANGE: '@app/PATH_CHANGE',
   LISTING_REQUEST: '@app/LISTING_REQUEST',
   LISTING_RECEIVE: '@app/LISTING_RECEIVE',
 
@@ -34,15 +32,6 @@ export const actions = {
   logUserOut() {
     return {
       type: actions.USER_LOGOUT
-    };
-  },
-
-  changePath(path) {
-    return {
-      type: actions.PATH_CHANGE,
-      payload: {
-        path
-      }
     };
   },
 
@@ -120,15 +109,6 @@ export const app = (
         ...state,
         token: '',
         isLoggedIn: false
-      };
-    }
-
-    case actions.PATH_CHANGE: {
-      const { path } = payload;
-
-      return {
-        ...state,
-        path
       };
     }
 

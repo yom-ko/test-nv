@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { Row, Button } from 'reactstrap';
+import PropTypes from 'prop-types';
 
 import { actions, getItems } from 'modules/app';
-
 import ResourceList from 'screens/disk/ResourceList';
 
 class Disk extends Component {
   componentDidMount() {
     const { token, path, requestListing, history } = this.props;
+
     requestListing(token, path);
 
     history.listen(location => {
@@ -24,6 +25,7 @@ class Disk extends Component {
 
   componentWillUnmount() {
     const { requestLogout } = this.props;
+
     requestLogout();
   }
 
@@ -33,7 +35,7 @@ class Disk extends Component {
     return (
       <>
         <Row className="justify-content-end">
-          <Button color="link" onClick={() => requestLogout()}>
+          <Button color="link" onClick={requestLogout}>
             Выйти
           </Button>
         </Row>
@@ -44,6 +46,15 @@ class Disk extends Component {
   }
 }
 
+Disk.propTypes = {
+  path: PropTypes.string.isRequired,
+  token: PropTypes.string.isRequired,
+  items: PropTypes.arrayOf(PropTypes.object).isRequired,
+  history: PropTypes.shape({ listen: PropTypes.func.isRequired }).isRequired,
+  requestListing: PropTypes.func.isRequired,
+  requestLogout: PropTypes.func.isRequired
+};
+
 // Map state and dispatch() to the component props
 const mapStateToProps = ({ app }) => ({
   path: app.path,
@@ -53,8 +64,8 @@ const mapStateToProps = ({ app }) => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    requestLogout: actions.requestLogout,
-    requestListing: actions.requestListing
+    requestListing: actions.requestListing,
+    requestLogout: actions.requestLogout
   },
   dispatch
 );

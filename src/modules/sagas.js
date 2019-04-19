@@ -1,16 +1,16 @@
 import { put, takeEvery, call, fork, delay, all } from 'redux-saga/effects';
-import { removeTokenFromPersistedState } from 'utils/helpers';
-import { actions } from 'modules/app';
+
 import * as api from 'utils/api';
+import { actions } from 'modules/app';
+import { removeTokenFromPersistedState } from 'utils/helpers';
 
 // Sagas
 function* logUserIn() {
   try {
     const result = yield call(api.checkResponse);
+
     if (result) {
       yield put(actions.logUserIn(result));
-      // yield delay(50);
-      // yield call(api.removeHash());
     }
   } catch (err) {
     console.log(err);
