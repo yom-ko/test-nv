@@ -8,6 +8,7 @@ export const actions = {
   LISTING_REQUEST: '@app/LISTING_REQUEST',
   LISTING_RECEIVE: '@app/LISTING_RECEIVE',
 
+  // Action creators
   attemptToLogUserIn() {
     return {
       type: actions.USER_ATTEMPT_LOGIN
